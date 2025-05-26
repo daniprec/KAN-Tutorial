@@ -30,3 +30,8 @@ To follow these tutorials, you should have a basic understanding of machine lear
 ## Contributions
 
 Contributions to this tutorial series are welcome! If you have suggestions for improvement or want to add new examples, please feel free to submit a pull request or open an issue.
+
+If you'd like to support my work, you can:
+<a href="https://www.buymeacoffee.com/pratgpt" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 45px; width: 162px;">
+</a>
