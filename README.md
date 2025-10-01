@@ -37,3 +37,70 @@ If you'd like to support my work, you can:
 <a href="https://www.buymeacoffee.com/pratgpt" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 45px; width: 162px;">
 </a>
+
+## Setup (Windows, macOS, Linux)
+
+Follow these steps to run the notebooks:
+
+### Option A: Using conda (recommended)
+
+1. Install Miniconda or Anaconda
+2. From the project root, create the environment:
+
+```bash
+conda env create -f environment.yml
+```
+
+3. Activate the environment:
+
+```bash
+conda activate kan-tutorial
+```
+
+4. (Optional) Create a .env from the example and adjust as desired:
+
+```bash
+copy example.env .env   # on Windows
+# cp example.env .env   # on macOS/Linux
+```
+
+5. Launch JupyterLab:
+
+```bash
+jupyter lab
+```
+
+### Option B: Using pip + venv
+
+1. Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+# Windows
+.\.venv\Scripts\activate
+# macOS/Linux
+# source .venv/bin/activate
+```
+
+2. Install requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. (Optional) Copy environment example:
+
+```bash
+copy example.env .env   # on Windows
+# cp example.env .env   # on macOS/Linux
+```
+
+4. Start JupyterLab:
+
+```bash
+jupyter lab
+```
+
+### Notes
+- The notebooks and `utils.py` use `torch`, `numpy`, and `matplotlib`.
+- The provided `environment.yml` pins Python 3.10 and CPU-only PyTorch by default. If you have a CUDA-capable GPU, replace `cpuonly` with an appropriate CUDA package per PyTorch installation instructions.

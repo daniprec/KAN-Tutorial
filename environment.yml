@@ -1,0 +1,12 @@
+name: kan-tutorial
+channels:
+- pytorch
+- conda-forge
+- defaults
+dependencies:
+- python=3.10
+- pip>=23
+- pytorch>=2.1,<3.0
+- cpuonly  # remove or replace with cudatoolkit=xx if you want GPU
+- pip:
+  - -r requirements.txt
