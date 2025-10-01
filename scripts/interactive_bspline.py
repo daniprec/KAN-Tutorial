@@ -28,6 +28,9 @@ def main():
 
     x_curve, y_curve = compute_curve(ctrl_x, k_init)
     (curve_line,) = ax.plot(x_curve, y_curve, label="B-spline", lw=2)
+    (curve_highlight,) = ax.plot(
+        [], [], c="orange", lw=3, label="Affected segment", zorder=2
+    )
     points = ax.scatter(
         ctrl_x, ctrl_y, c="crimson", s=50, zorder=3, label="Control points"
     )
@@ -46,10 +49,16 @@ def main():
     # Drag handling
     state = {"drag_idx": None}
 
-    def redraw():
+    def redraw(highlight_idx=None):
         k_val = int(s_k.val)
         x_c, y_c = compute_curve(ctrl_x, k_val)
         curve_line.set_data(x_c, y_c)
+        if highlight_idx is not None:
+            idx_left, idx_right = highlight_idx
+            mask = (x_c >= ctrl_x[idx_left]) & (x_c <= ctrl_x[idx_right])
+            curve_highlight.set_data(x_c[mask], y_c[mask])
+        else:
+            curve_highlight.set_data([], [])
         # update scatter offsets
         points.set_offsets(np.c_[ctrl_x, ctrl_y])
         fig.canvas.draw_idle()
@@ -86,10 +95,14 @@ def main():
         if idx < len(ctrl_x) - 1:
             x_new = min(x_new, float(ctrl_x[idx + 1]) - eps)
         ctrl_x[idx] = x_new
-        redraw()
+        # highlight which part of the curve is being affected
+        idx_left = max(0, idx - s_k.val)
+        idx_right = min(num_ctrl - 1, idx + s_k.val)
+        highlight_idx = (idx_left, idx_right)
+        redraw(highlight_idx=highlight_idx)
 
     def on_k_change(val):
-        redraw()
+        redraw(highlight_idx=None)
 
     s_k.on_changed(on_k_change)
 
