@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 
-def extend_grid(grid, k):
+def extend_grid(grid: torch.Tensor, k: int) -> torch.Tensor:
     """
     Extends the grid on either size by k steps
 
@@ -23,9 +23,12 @@ def extend_grid(grid, k):
     return grid
 
 
-def eval_basis_functions(x_eval, grid, k):
+def eval_basis_functions(
+    x_eval: torch.Tensor, grid: torch.Tensor, k: int
+) -> torch.Tensor:
     """
-    Returns the value of basis functions defiend for order-k splines and control points defined in `grid`.
+    Returns the value of basis functions defiend for order-k splines and
+    control points defined in `grid`.
 
     Args:
         x_eval: number of samples x number of dimensions
@@ -61,7 +64,7 @@ def eval_basis_functions(x_eval, grid, k):
     return bases.transpose(1, 2)
 
 
-def get_coeff(bases, y_eval):
+def get_coeff(bases: torch.Tensor, y_eval: torch.Tensor) -> torch.Tensor:
     """
     Returns coefficients that give y_eval from bases
 
@@ -74,22 +77,22 @@ def get_coeff(bases, y_eval):
 
 
 def single_stacked_kan_training(
-    x_training,
-    y_training,
-    x_test,
-    y_test,
-    model_params=None,
-    lr=0.1,
-    k=2,
-    n_layers=2,
-    grid_sizes=[],
-    grid_ranges=[],
-    early_stopping_imrpovement_threshold=200,
-    early_stopping_iterations=1e4,
-    verbose=False,
-    grid_range=[-1, 1],
-    use_scales=False,
-):
+    x_training: torch.Tensor,
+    y_training: torch.Tensor,
+    x_test: torch.Tensor,
+    y_test: torch.Tensor,
+    model_params: dict = None,
+    lr: float = 0.1,
+    k: int = 2,
+    n_layers: int = 2,
+    grid_sizes: list = [],
+    grid_ranges: list = [],
+    early_stopping_imrpovement_threshold: int = 200,
+    early_stopping_iterations: float = 1e4,
+    verbose: bool = False,
+    grid_range: list = [-1, 1],
+    use_scales: bool = False,
+) -> tuple[dict, torch.Tensor, dict, list]:
     """
     Trains a KAN of shape [1, 1, 1, ...1] with `n_layers` layers.
     Args:
@@ -106,7 +109,7 @@ def single_stacked_kan_training(
         early_stopping_improvement_threshold: Number of iterations after which we can stop if there is no improvement in the validation loss
         early_stopping_iterations: Maximum number of iterations
         verbose: Whether to print the intermediate losses or not
-        grid_range: Range of grids
+        grid_range: Range of grids (used for grid initialization)
         use_scales: Whether to use the scaling parameters (see section 2. )
 
     """
