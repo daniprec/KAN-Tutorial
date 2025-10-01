@@ -10,3 +10,4 @@ dependencies:
 - cpuonly  # remove or replace with cudatoolkit=xx if you want GPU
 - pip:
   - -r requirements.txt
+  - -e .

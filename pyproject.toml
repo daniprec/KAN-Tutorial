@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kan-tutorial"
+version = "0.0.1"
+description = "Tutorial utilities for Kolmogorov-Arnold Networks (KAN)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "KAN Tutorial" }]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kan_tutorial*"]
+
+
