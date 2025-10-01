@@ -24,7 +24,7 @@ def extend_grid(grid: torch.Tensor, k: int) -> torch.Tensor:
 
 
 def eval_basis_functions(
-    x_eval: torch.Tensor, grid: torch.Tensor, k: int
+    x_eval: torch.Tensor, grid: torch.Tensor, k: int, extend: bool = True
 ) -> torch.Tensor:
     """
     Returns the value of basis functions defiend for order-k splines and
@@ -38,7 +38,10 @@ def eval_basis_functions(
     Returns:
         bases: number of samples x number of dimensions x number of basis functions
     """
-    grid_ = extend_grid(grid, k)
+    if extend:
+        grid_ = extend_grid(grid, k)
+    else:
+        grid_ = grid
     # Reshape so that each x can be compared to each control point
     grid_ = grid_.unsqueeze(dim=2)
     x_ = x_eval.unsqueeze(dim=1)
