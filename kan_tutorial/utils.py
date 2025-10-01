@@ -130,10 +130,10 @@ def single_stacked_kan_training(
             if use_scales:
                 base_fn = torch.nn.SiLU()
                 scale_base = torch.nn.Parameter(
-                    torch.ones(x_eval.shape[-1])
+                    torch.ones(x_training.shape[-1])
                 ).requires_grad_(True)
                 scale_spline = torch.nn.Parameter(
-                    torch.ones(x_eval.shape[-1])
+                    torch.ones(x_training.shape[-1])
                 ).requires_grad_(True)
 
                 scale_bases.append(scale_base)
