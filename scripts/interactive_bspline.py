@@ -11,14 +11,13 @@ def compute_curve(ctrl_x: np.ndarray, k: int, num_samples: int = 600):
     grid = torch.tensor(ctrl_x, dtype=torch.float32).unsqueeze(0)
 
     x_dense = torch.linspace(0.0, 1.0, steps=num_samples).unsqueeze(1)
-    bases_dense = eval_basis_functions(x_dense, grid, int(k), extend=False)  # [N, 1, H]
+    bases_dense = eval_basis_functions(x_dense, grid, int(k), extend=True)  # [N, 1, H]
     y_dense = bases_dense.squeeze(1).mean(dim=1, keepdim=True)  # [N, 1]
     return x_dense.squeeze(1).numpy(), y_dense.numpy()
 
 
-def main():
+def main(num_ctrl: int = 12):
     # Initial settings
-    num_ctrl = 10
     ctrl_x = np.linspace(0.0, 1.0, num_ctrl)
     ctrl_y = np.ones(num_ctrl) / 2
     k_init = 3
@@ -36,14 +35,14 @@ def main():
     )
 
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 2)
+    ax.set_ylim(0, 1)
     ax.grid(True, alpha=0.3)
     ax.legend(loc="upper right")
 
     # Widgets: order (degree) slider and interval index slider
     ax_k = plt.axes([0.08, 0.10, 0.30, 0.03])
     s_k = Slider(
-        ax=ax_k, label="Order k", valmin=0, valmax=5, valinit=k_init, valstep=1
+        ax=ax_k, label="Order k", valmin=0, valmax=4, valinit=k_init, valstep=1
     )
 
     # Drag handling
