@@ -4,6 +4,8 @@ This repo contains notebooks with toy examples to build intuitive understanding 
 
 Original paper: [Liu et al. 2024, KAN: Kolmogorov-Arnold Networks](https://arxiv.org/abs/2404.19756)
 
+Original repository: [Prateek Gupta](https://github.com/pg2455/KAN-Tutorial)
+
 ## About the Tutorials
 With the help of toy examples, notebooks are structured to help in understanding both the theoretical underpinnings and practical applications of KANs. 
 
