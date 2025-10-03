@@ -18,9 +18,6 @@
 \date{\today}
 \begin{document}
 \maketitle
-\begin{frame}{Kolmogorov-Arnold Networks}
-
-\end{frame}
 
 \begin{frame}{Kolmogorov-Arnold Representation Theorem}
 Let $ \Omega \subset \mathbb{R}^d $ be a bounded domain and let $ f: \Omega \rightarrow \mathbb{R} $ be a continuous function; i.e. $ f \in C(\Omega) $.
@@ -39,58 +36,172 @@ f(\mathbf{x}) = \sum_{q=1}^{2d+1} \Phi_q \left( \sum_{p=1}^d \phi_{pq}(x_p) \rig
 $$
 \end{frame}
 
-\begin{frame}{Kolmogorov-Arnold Representation Theorem}
-For a bivariate function $f(x_1, x_2)$, we then have:
+%------------------------------------------
 
-\begin{figure}
-	\centering
-	\resizebox{0.4\linewidth}{!}{\input{kan_diagram.tex}}
-\end{figure}
-
-Which is a simple KAN!
+\begin{frame}{Kolmogorov–Arnold Representation Theorem}
+	
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column: diagram ---
+		\column{0.55\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{\input{an_251.tex}}
+		
+		% --- Right column: explanation ---
+		\column{0.4\textwidth}
+		The theorem states that any $f(x_1, x_2)$ can be written as a sum of univariate compositions.
+		
+		\vspace{0.8em}
+		The diagram shows this expression visually: each block represents a component of the decomposition.
+		
+		\vspace{0.8em}
+		Together, they form a \textbf{Kolmogorov–Arnold Network (KAN)}.
+		
+	\end{columns}
+	
 \end{frame}
 
+%------------------------------------------
+
+\begin{frame}{Kolmogorov–Arnold Networks}
+	
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column: diagram ---
+		\column{0.55\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
+		
+		% --- Right column: explanation ---
+		\column{0.4\textwidth}
+		In a network setting, each univariate function is written as $\phi_{lpq}$, where:
+		\vspace{0.8em}
+		\begin{itemize}
+			\item $l$: layer depth  
+			\item $p$: output node index  
+			\item $q$: input node index
+		\end{itemize}
+		
+		\vspace{1em}
+		This network is a \textbf{KAN [2,5,1]}:\\it has 2 inputs, one hidden layer with 5 nodes, and 1 output.
+		
+	\end{columns}
+	
+\end{frame}
+
+
+%------------------------------------------
+
 \begin{frame}{B-Splines}
-$\Phi_q$ and $\phi_{p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the **B-spline** family.
+$\Phi_q$ and $\phi_{p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
 
 A B-spline of degree $k$ is defined as:
 
 $$B_k(x) = \sum_{i=0}^{n-k-1} P_i N_{i,k}(x)$$
 
-where $n$ is the number of control points (length of the knot vector), and $P_i$ are the basis function weights.
-
-And $N_{i,k}$ are the basis functions, following the standard **Cox-de Boor recursive definition**:
-
-$$
-N_{i,0}(x) =
-\begin{cases}
-1, & t_i \le x < t_{i+1} \\
-0, & \text{otherwise}
-\end{cases}
-$$
-
-$$
-N_{i,k}(x) =
-\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
-+
-\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
-\quad k > 0
-$$
-
-where ${t_i} \in [t_1, t_n]$ is the **knot vector**, a non-decreasing sequence of real numbers.
+where $n$ is the number of control points (length of the knot vector),\\
+$N_{i,k}$ are the basis functions of degree $k$,\\
+and $P_i$ are the basis function weights.
 \end{frame}
+
+%------------------------------------------
+
+\begin{frame}{B-Splines}
+	The basis functions follow the standard \textbf{Cox–de Boor recursive definition}:
+	
+	\begin{flalign*}
+		N_{i,0}(x) &= 
+		\begin{cases}
+			1, & t_i \le x < t_{i+1} \\
+			0, & \text{otherwise}
+		\end{cases} &
+	\end{flalign*}
+	
+	\begin{flalign*}
+		N_{i,k}(x) &=
+		\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
+		+
+		\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
+		\quad k > 0 &
+	\end{flalign*}
+	
+	where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers.
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Kolmogorov–Arnold Networks}
+	
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column: diagram ---
+		\column{0.55\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
+		
+		% --- Right column: explanation ---
+		\column{0.4\textwidth}
+		
+		We choose the same $k$-degree and $n$ knot vector length for all B-splines. The univariate functions become:
+		
+		\begin{flalign*}
+			\phi_{pq} = w_{pq} B_{pq}(x) + b_{pq}
+		\end{flalign*}
+		
+	\end{columns}
+	
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Kolmogorov–Arnold Networks}
+	
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column: diagram ---
+		\column{0.55\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
+		
+		% --- Right column: explanation ---
+		\column{0.4\textwidth}
+		
+		\textbf{Hyperparameters}
+		\begin{itemize}
+			\item $n$: number of control points.
+			\item $k$: B-spline degree.
+		\end{itemize}
+		
+		\vspace{0.8em}
+		\textbf{Learnable parameters}\\(for each edge)
+		\begin{itemize}
+			\item $t_i$: knot vectors, $i \in [1, n]$.
+			\item $P_i$: basis weights, $i \in [1, n-k-1]$.
+		\end{itemize}
+		
+	\end{columns}
+	
+\end{frame}
+
+%------------------------------------------
 
 \begin{frame}{Grid Extension}
 
 \end{frame}
 
+%------------------------------------------
+
 \begin{frame}{Continuous Learning}
 B-splines are made of basin functions that operate in small bounds of X. Learning new information in a part of X does not alter other regions of X. In contrary, traditional MLP risk **catastrohpic forgetting**.
 \end{frame}
 
+%------------------------------------------
+
 \begin{frame}{Symbolic Regression}
 
 \end{frame}
+
+%------------------------------------------
 
 \begin{frame}{Sparsibility}
 
