@@ -18,3 +18,12 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+
+# LaTeX files
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc

@@ -1,0 +1,99 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{metropolis}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{minted} % compile with -shell-escape
+\setminted{fontsize=\footnotesize, breaklines, autogobble, frame=lines}
+
+\title{KAN Tutorial Slides}
+\author{Daniel Precioso Garcelán}
+\date{\today}
+\begin{document}
+\maketitle
+\begin{frame}{Kolmogorov-Arnold Networks}
+
+\end{frame}
+
+\begin{frame}{Kolmogorov-Arnold Representation Theorem}
+Let $ \Omega \subset \mathbb{R}^d $ be a bounded domain and let $ f: \Omega \rightarrow \mathbb{R} $ be a continuous function; i.e. $ f \in C(\Omega) $.
+
+Then there exist continuous univariate functions
+$$
+\Phi_q: \mathbb{R} \to \mathbb{R}, \quad q = 1, \dots, 2d+1;
+$$
+and continuous univariate functions
+$$
+\phi_{pq}: \mathbb{R} \to \mathbb{R}, \quad p = 1, \dots, d; \quad q = 1, \dots, 2d+1;
+$$
+such that for every $\mathbf{x} = (x_1, \dots, x_d) \in \Omega$,
+$$
+f(\mathbf{x}) = \sum_{q=1}^{2d+1} \Phi_q \left( \sum_{p=1}^d \phi_{pq}(x_p) \right).
+$$
+\end{frame}
+
+\begin{frame}{Kolmogorov-Arnold Representation Theorem}
+For a bivariate function $f(x_1, x_2)$, we then have:
+
+\begin{figure}
+	\centering
+	\resizebox{0.4\linewidth}{!}{\input{kan_diagram.tex}}
+\end{figure}
+
+Which is a simple KAN!
+\end{frame}
+
+\begin{frame}{B-Splines}
+$\Phi_q$ and $\phi_{p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the **B-spline** family.
+
+A B-spline of degree $k$ is defined as:
+
+$$B_k(x) = \sum_{i=0}^{n-k-1} P_i N_{i,k}(x)$$
+
+where $n$ is the number of control points (length of the knot vector), and $P_i$ are the basis function weights.
+
+And $N_{i,k}$ are the basis functions, following the standard **Cox-de Boor recursive definition**:
+
+$$
+N_{i,0}(x) =
+\begin{cases}
+1, & t_i \le x < t_{i+1} \\
+0, & \text{otherwise}
+\end{cases}
+$$
+
+$$
+N_{i,k}(x) =
+\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
++
+\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
+\quad k > 0
+$$
+
+where ${t_i} \in [t_1, t_n]$ is the **knot vector**, a non-decreasing sequence of real numbers.
+\end{frame}
+
+\begin{frame}{Grid Extension}
+
+\end{frame}
+
+\begin{frame}{Continuous Learning}
+B-splines are made of basin functions that operate in small bounds of X. Learning new information in a part of X does not alter other regions of X. In contrary, traditional MLP risk **catastrohpic forgetting**.
+\end{frame}
+
+\begin{frame}{Symbolic Regression}
+
+\end{frame}
+
+\begin{frame}{Sparsibility}
+
+\end{frame}
+
+\end{document}
