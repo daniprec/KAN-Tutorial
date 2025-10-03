@@ -1,0 +1,117 @@
+\begin{tikzpicture}[
+	neuron/.style={circle, draw, minimum size=6mm, inner sep=0pt},
+	box/.style={draw, rectangle, minimum width=9mm, minimum height=7mm, inner sep=1pt},
+	faded/.style={draw=gray!40, fill=gray!5, text=gray!50},
+	fadedline/.style={->, shorten >=1pt, shorten <=1pt, draw=gray!30},
+	]
+	
+	%-----------------------
+	% Customizable heights
+	%-----------------------
+	\def\hin{0}
+	\def\hphi{1.5}
+	\def\hsum{3}
+	\def\hPhi{4.5}
+	\def\hsumall{6}
+	\def\hout{7.5}
+	
+	%-----------------------
+	% Row 1: inputs
+	%-----------------------
+	\node[neuron] (X1) at (-2.5,\hin) {$x$};
+	\node[neuron] (X2) at ( 2.5,\hin) {$y$};
+	
+	%-----------------------
+	% Row 2: phi_{i,j} squares
+	%-----------------------
+	\node[box] (phi111) at (-4.5,\hphi) {$x^2$}; % active
+	\node[box] (phi121) [faded] at (-3.5,\hphi) {$\phi_{1,2,1}$}; % faded
+	\node[box] (phi131) at (-2.5,\hphi) {$x$}; % active
+	\node[box] (phi141) [faded] at (-1.5,\hphi) {$\phi_{1,4,1}$}; % faded
+	\node[box] (phi151) [faded] at (-0.5,\hphi) {$\phi_{1,5,1}$}; % faded
+	
+	\node[box] (phi112) at (0.5,\hphi) {$y^2$}; % active
+	\node[box] (phi122) [faded] at (1.5,\hphi) {$\phi_{1,2,2}$}; % faded
+	\node[box] (phi132) at (2.5,\hphi) {$y$}; % active
+	\node[box] (phi142) [faded] at (3.5,\hphi) {$\phi_{1,4,2}$}; % faded
+	\node[box] (phi152) [faded] at (4.5,\hphi) {$\phi_{1,5,2}$}; % faded
+	
+	%-----------------------
+	% Row 3: per-column sums
+	%-----------------------
+	\node[neuron] (S-1) at (-4,\hsum) {$\sum$};
+	\node[neuron] (S-2) [faded] at (-2,\hsum) {$\sum$};
+	\node[neuron] (S-3) at ( 0,\hsum) {$\sum$};
+	\node[neuron] (S-4) [faded] at ( 2,\hsum) {$\sum$};
+	\node[neuron] (S-5) [faded] at ( 4,\hsum) {$\sum$};
+	
+	%-----------------------
+	% Row 4: Phi_j squares
+	%-----------------------
+	\node[box] (phi211) at (-4,\hPhi) {$-(x^2+y^2)$};
+	\node[box] (phi212) [faded] at (-2,\hPhi) {$\phi_{2,1,2}$};
+	\node[box] (phi213) at ( 0,\hPhi) {$(x + y)^2$};
+	\node[box] (phi214) [faded] at ( 2,\hPhi) {$\phi_{2,1,4}$};
+	\node[box] (phi215) [faded] at ( 4,\hPhi) {$\phi_{2,1,5}$};
+	
+	%-----------------------
+	% Row 5: global sum
+	%-----------------------
+	\node[neuron] (Sall) at (0,\hsumall) {$\sum$};
+	
+	%-----------------------
+	% Row 6: output
+	%-----------------------
+	\node[neuron] (F) at (0,\hout) {$2xy$};
+	
+	%-----------------------
+	% Connections
+	%-----------------------
+	\tikzset{connect/.style={->,shorten >=1pt,shorten <=1pt}}
+	
+	% Inputs -> phi
+	\draw[connect] (X1.north) -- (phi131.south);
+	\draw[connect] (X2.north) -- (phi132.south);
+	
+	\draw[connect] (X1.north) -- (phi111.south);
+	\draw[fadedline] (X1.north) -- (phi121.south);
+	\draw[fadedline] (X1.north) -- (phi141.south);
+	\draw[fadedline] (X1.north) -- (phi151.south);
+	\draw[connect] (X2.north) -- (phi112.south);
+	\draw[fadedline] (X2.north) -- (phi122.south);
+	\draw[fadedline] (X2.north) -- (phi142.south);
+	\draw[fadedline] (X2.north) -- (phi152.south);
+	
+	% phi -> sum
+	\draw[connect] (phi131.north) -- (S-3.south);
+	\draw[connect] (phi132.north) -- (S-3.south);
+	
+	\draw[connect] (phi111.north) -- (S-1.south);
+	\draw[connect] (phi112.north) -- (S-1.south);
+	\draw[fadedline] (phi121.north) -- (S-2.south);
+	\draw[fadedline] (phi122.north) -- (S-2.south);
+	\draw[fadedline] (phi141.north) -- (S-4.south);
+	\draw[fadedline] (phi142.north) -- (S-4.south);
+	\draw[fadedline] (phi151.north) -- (S-5.south);
+	\draw[fadedline] (phi152.north) -- (S-5.south);
+	
+	% sum -> Phi
+	\draw[connect] (S-3.north) -- (phi213.south);
+	
+	\draw[connect] (S-1.north) -- (phi211.south);
+	\draw[fadedline] (S-2.north) -- (phi212.south);
+	\draw[fadedline] (S-4.north) -- (phi214.south);
+	\draw[fadedline] (S-5.north) -- (phi215.south);
+	
+	% Phi -> global sum
+	\draw[connect] (phi213.north) -- (Sall.south);
+	
+	\draw[connect] (phi211.north) -- (Sall.south);
+	\draw[fadedline] (phi212.north) -- (Sall.south);
+	\draw[fadedline] (phi214.north) -- (Sall.south);
+	\draw[fadedline] (phi215.north) -- (Sall.south);
+	
+	% Global sum -> output
+	\draw[connect] (Sall.north) -- (F.south);
+	
+\end{tikzpicture}
