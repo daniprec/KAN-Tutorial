@@ -1,5 +1,5 @@
 \begin{tikzpicture}[
-	neuron/.style={circle, draw, minimum size=10mm, inner sep=0pt},
+	neuron/.style={circle, draw, minimum size=6mm, inner sep=0pt},
 	box/.style={draw, rectangle, minimum width=9mm, minimum height=7mm, inner sep=1pt, fill=white},
 	>=stealth
 	]
@@ -61,7 +61,7 @@
 	%-----------------------
 	% Row 6: output
 	%-----------------------
-	\node[neuron] (F) at (0,\hout) {$f(x_1,x_2)$};
+	\node[neuron] (F) at (0,\hout) {$f(\mathbf{x})$};
 	
 	%-----------------------
 	% Connections (use top/bottom anchors)

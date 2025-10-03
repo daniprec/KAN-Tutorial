@@ -74,7 +74,7 @@ $$
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
-		In a network setting, each univariate function is written as $\phi_{lpq}$, where:
+		In a network setting, each univariate function is written as $\phi_{l,p,q}$, where:
 		\vspace{0.8em}
 		\begin{itemize}
 			\item $l$: layer depth  
@@ -89,66 +89,86 @@ $$
 	
 \end{frame}
 
-
 %------------------------------------------
 
-\begin{frame}{B-Splines}
-$\Phi_q$ and $\phi_{p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
-
-A B-spline of degree $k$ is defined as:
-
-$$B_k(x) = \sum_{i=0}^{n-k-1} P_i N_{i,k}(x)$$
-
-where $n$ is the number of control points (length of the knot vector),\\
-$N_{i,k}$ are the basis functions of degree $k$,\\
-and $P_i$ are the basis function weights.
+\begin{frame}{Kolmogorov–Arnold Networks}
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column: diagram ---
+		\column{0.5\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{\input{kan_2331.tex}}
+		
+		% --- Right column: explanation ---
+		\column{0.45\textwidth}
+		\textbf{KAN [2,3,3,1]} – two inputs, two hidden layers of 3, one output.
+		
+		\vspace{0.8em}
+		\textit{Why go deeper?}
+		\begin{itemize}
+			\item \textbf{Theory:} Any continuous $f$ admits a shallow KAN \([n,\,2n{+}1,\,1]\).
+			\item \textbf{Practice:} Deeper KANs can model non-continuous functions. Depth improves expressivity.
+		\end{itemize}
+		
+	\end{columns}
 \end{frame}
 
 %------------------------------------------
 
 \begin{frame}{B-Splines}
-	The basis functions follow the standard \textbf{Cox–de Boor recursive definition}:
+	$\phi_{l,p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
 	
-	\begin{flalign*}
-		N_{i,0}(x) &= 
-		\begin{cases}
-			1, & t_i \le x < t_{i+1} \\
-			0, & \text{otherwise}
-		\end{cases} &
-	\end{flalign*}
+	A B-spline of degree $k$ is defined as:
 	
-	\begin{flalign*}
-		N_{i,k}(x) &=
-		\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
-		+
-		\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
-		\quad k > 0 &
-	\end{flalign*}
+	$$B_k(x) = \sum_{i=1}^{n-k-1} P_i N_{i,k}(x)$$
 	
-	where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers.
+	where $n$ is the number of control points (length of the knot vector),\\
+	$N_{i,k}$ are the basis functions of degree $k$,\\
+	and $P_i$ are the basis function weights.
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{B-Splines}
+The basis functions follow the standard \textbf{Cox–de Boor recursive definition}:
+
+\begin{flalign*}
+	N_{i,0}(x) &= 
+	\begin{cases}
+		1, & t_i \le x < t_{i+1} \\
+		0, & \text{otherwise}
+	\end{cases} &
+\end{flalign*}
+
+\begin{flalign*}
+	N_{i,k}(x) &=
+	\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
+	+
+	\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
+	\quad k > 0 &
+\end{flalign*}
+
+where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers.
 \end{frame}
 
 %------------------------------------------
 
 \begin{frame}{Kolmogorov–Arnold Networks}
 	
-	\begin{columns}[T,onlytextwidth]
-		
-		% --- Left column: diagram ---
-		\column{0.55\textwidth}
-		\centering
-		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
-		
-		% --- Right column: explanation ---
-		\column{0.4\textwidth}
-		
-		We choose the same $k$-degree and $n$ knot vector length for all B-splines. The univariate functions become:
-		
-		\begin{flalign*}
-			\phi_{pq} = w_{pq} B_{pq}(x) + b_{pq}
-		\end{flalign*}
-		
-	\end{columns}
+	All univariate functions share the same spline degree $k$ and knot vector length $n$.  
+	Each $\phi_{l,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
+	
+	\begin{flalign*}
+		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n-k-1} P_i\, N_{i,k}(x)
+	\end{flalign*}
+	
+	Here, $w_b$ is the learnable weight of the basis function, and the spline coefficients \(P_i\) scale the individual B-spline functions directly.
+	
+	We choose the basis as:
+	
+	\begin{flalign*}
+		b(x) = \mathrm{SiLU}(x) = \frac{x}{1 + e^{-x}}
+	\end{flalign*}
 	
 \end{frame}
 
@@ -176,7 +196,8 @@ and $P_i$ are the basis function weights.
 		\textbf{Learnable parameters}\\(for each edge)
 		\begin{itemize}
 			\item $t_i$: knot vectors, $i \in [1, n]$.
-			\item $P_i$: basis weights, $i \in [1, n-k-1]$.
+			\item $P_i$: B-spline weights, $i \in [1, n-k-1]$.
+			\item $w_b$: basis weight.
 		\end{itemize}
 		
 	\end{columns}
