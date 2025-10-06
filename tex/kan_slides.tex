@@ -73,10 +73,10 @@ $$
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
-		In a network setting, each univariate function is written as $\phi_{l,p,q}$, where:
+		In a network setting, each univariate function is written as $\phi_{d,p,q}$, where:
 		\vspace{0.8em}
 		\begin{itemize}
-			\item $l$: layer depth  
+			\item $d$: layer depth  
 			\item $p$: output node index  
 			\item $q$: input node index
 		\end{itemize}
@@ -100,12 +100,12 @@ $$
 		
 		% --- Right column: explanation ---
 		\column{0.45\textwidth}
-		\textbf{KAN [2,3,3,1]} – two inputs, two hidden layers of 3, one output.
+		\textbf{KAN [2,3,3,1]}: 2 inputs, two hidden layers of 3, 1 output.
 		
 		\vspace{0.8em}
 		\textit{Why go deeper?}
 		\begin{itemize}
-			\item \textbf{Theory:} Any continuous $f$ admits a shallow KAN \([n,\,2n{+}1,\,1]\).
+			\item \textbf{Theory:} Any continuous $f(\mathbf{x})$ admits a shallow KAN \([n,\,2n{+}1,\,1]\).
 			\item \textbf{Practice:} Deeper KANs can model non-continuous functions. Depth improves expressivity.
 		\end{itemize}
 		
@@ -115,7 +115,7 @@ $$
 %------------------------------------------
 
 \begin{frame}{B-Splines}
-	$\phi_{l,p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
+	$\phi_{d,p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
 	
 	A B-spline of degree $k$ is defined as:
 	
@@ -155,7 +155,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 \begin{frame}{B-Splines as KAN Edges}
 	
 	All univariate functions share the same spline degree $k$ and knot vector length $n$.  
-	Each $\phi_{l,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
+	Each $\phi_{d,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
 	
 	\begin{flalign*}
 		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n-k-1} P_i\, N_{i,k}(x)
@@ -200,6 +200,29 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		\end{itemize}
 		
 	\end{columns}
+	
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{KAN Backpropagation}
+	Loss function is L2 (RMSE): 
+	
+	\begin{equation*}
+		L = \left\| y - \hat{y} \right\|_2 = \left\| f(\mathbf{x}) - \hat{f}_{d}(\mathbf{x}) \right\|_2 = \left\| f(\mathbf{x}) - \sum_q \phi_{d,q}(\mathbf{x}) \right\|_2
+	\end{equation*}
+	
+	Where $d$ is the last layer, and $p=1$ because we have a single output. The coefficients of that layer are $P_{d,q,i}$.
+	
+	\begin{equation*}
+		\frac{\partial L}{\partial P_{d,q,i}} = \frac{\partial L}{\partial \hat{f}_{d}(\mathbf{x})} \cdot \frac{\partial \hat{f}_{d}(\mathbf{x})}{\partial P_{d,q,i}} 
+	\end{equation*}
+	
+	And for the previous layer $d-1$:
+	
+	\begin{equation*}
+		\frac{\partial L}{\partial P_{d-1,p,q,i}} = \frac{\partial L}{\partial \hat{f}_{d}(\mathbf{x})} \cdot \frac{\partial \hat{f}_{d}(\mathbf{x})}{\partial \hat{f}_{d-1,p}(\mathbf{x})} \cdot \frac{\partial \hat{f}_{d-1,p}(\mathbf{x})}{\partial P_{d-1,p,q,i}} 
+	\end{equation*}
 	
 \end{frame}
 
@@ -270,7 +293,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		\vspace{0.6em}
 		\begin{itemize}
 			\item \textbf{Regularization} drives many spline weights toward zero.
-			\item Irrelevant $\phi_{l,p,q}$ can be pruned after training.
+			\item Irrelevant $\phi_{d,p,q}$ can be pruned after training.
 			\item The result is a compact, interpretable network.
 		\end{itemize}
 		
@@ -291,7 +314,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 	KANs provide an interpretable path from neural models to closed-form expressions:
 	
 	\begin{itemize}
-		\item Each learned $\phi_{l,p,q}$ is a univariate function, which can often be approximated by simple analytic forms (e.g., $\sin$, $\exp$, $\log$).
+		\item Each learned $\phi_{d,p,q}$ is a univariate function, which can often be approximated by simple analytic forms (e.g., $\sin$, $\exp$, $\log$).
 		\item After training, these functions are ``snapped'' to symbolic templates via affine fitting, producing human-readable equations.
 		\item The resulting network can be viewed as a composition graph of symbolic functions approximating $f(x)$.
 	\end{itemize}
