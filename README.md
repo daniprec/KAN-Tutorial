@@ -95,3 +95,9 @@ jupyter lab
 ### Notes
 - The notebooks and `utils.py` use `torch`, `numpy`, and `matplotlib`.
 - The provided `environment.yml` pins Python 3.10 and CPU-only PyTorch by default. If you have a CUDA-capable GPU, replace `cpuonly` with an appropriate CUDA package per PyTorch installation instructions.
+
+## Repositories of Interest
+
+Original repository: [Prateek Gupta](https://github.com/pg2455/KAN-Tutorial)
+
+[Efficient KAN](https://github.com/Blealtan/efficient-kan)
