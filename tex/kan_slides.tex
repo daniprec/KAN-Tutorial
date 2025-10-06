@@ -1,21 +1,20 @@
 \documentclass[aspectratio=169]{beamer}
-\usetheme{metropolis}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amsmath,amssymb,mathtools}
-\usepackage{bm}
+\usetheme{ie} % <— this loads beamerthemeie.sty
+
+% If you use minted, compile with: -shell-escape
+\usepackage{amsmath, amssymb, mathtools, bm}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{booktabs}
-\usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{caption}
-\usepackage{minted} % compile with -shell-escape
-\setminted{fontsize=\footnotesize, breaklines, autogobble, frame=lines}
+% \usepackage{minted}
+% \setminted{fontsize=\footnotesize, breaklines, autogobble, frame=lines}
 
-\title{KAN Tutorial Slides}
-\author{Daniel Precioso Garcelán}
+% Optional: set short versions for footer
+\title[Kolmogorov–Arnold Networks]{KAN Tutorial Slides}
+\author[Daniel Precioso]{Daniel Precioso Garcelán}
 \date{\today}
+
 \begin{document}
 \maketitle
 
@@ -45,7 +44,7 @@ $$
 		% --- Left column: diagram ---
 		\column{0.55\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{\input{an_251.tex}}
+		\resizebox{!}{0.8\textheight}{\input{an_251.tex}}
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
@@ -70,7 +69,7 @@ $$
 		% --- Left column: diagram ---
 		\column{0.55\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
+		\resizebox{!}{0.8\textheight}{\input{kan_251.tex}}
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
@@ -97,7 +96,7 @@ $$
 		% --- Left column: diagram ---
 		\column{0.5\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{\input{kan_2331.tex}}
+		\resizebox{!}{0.8\textheight}{\input{kan_2331.tex}}
 		
 		% --- Right column: explanation ---
 		\column{0.45\textwidth}
@@ -181,7 +180,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		% --- Left column: diagram ---
 		\column{0.55\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{\input{kan_251.tex}}
+		\resizebox{!}{0.8\textheight}{\input{kan_251.tex}}
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
@@ -238,7 +237,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		% --- Right column: image ---
 		\column{0.45\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{../images/grid_extension.png}
+		\includegraphics[height=0.8\textheight]{../images/grid_extension.png}
 		
 	\end{columns}
 \end{frame}
@@ -252,7 +251,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.8\linewidth]{../images/continual_learning.png}
+		\includegraphics[height=0.6\textheight]{../images/continual_learning.png}
 	\end{figure}
 	
 \end{frame}
@@ -280,7 +279,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		% --- Right column: diagram ---
 		\column{0.45\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{\input{kan_2xy.tex}}
+		\resizebox{!}{0.75\textheight}{\input{kan_2xy.tex}}
 		
 	\end{columns}
 \end{frame}
@@ -307,7 +306,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{../images/kan_training.png}
+		\includegraphics[height=0.8\textheight]{../images/kan_training.png}
 	\end{figure}
 	
 \end{frame}

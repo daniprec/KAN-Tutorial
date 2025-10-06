@@ -1,0 +1,151 @@
+% beamerthemeie.sty — IE University (Science & Technology) Beamer theme
+% ---------------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeie}[2025/10/06 IE SciTech beamer theme]
+
+% ------------------------ Dependencies -------------------------------
+\RequirePackage{xcolor}
+\RequirePackage{etoolbox}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+% Typography: Montserrat as corporate sans (pdfLaTeX friendly)
+\RequirePackage[semibold]{Montserrat}
+\renewcommand{\familydefault}{\sfdefault}
+
+% If you prefer crisper math, uncomment:
+% \RequirePackage{newtxmath}
+
+\setbeamertemplate{navigation symbols}{}
+% The arrows, home icon, and slide counter bar disappear
+
+% ------------------------ Color Palette ------------------------------
+% Corporate (from IE guidelines)
+\definecolor{ieprimary}{HTML}{000066}     % primary deep blue
+\definecolor{ieaccent}{HTML}{47BFFF}      % accent cyan/sea-blue
+
+% Secondary scale (subset)
+\definecolor{iedeepblue}{HTML}{000024}
+\definecolor{ienavyblue}{HTML}{000083}
+\definecolor{iMarineBlue}{HTML}{0000A0}
+\definecolor{ieelectric}{HTML}{0000DB}
+\definecolor{ieseablue}{HTML}{47BFFF}
+\definecolor{ieskyblue}{HTML}{96DAFF}
+\definecolor{ielightblue}{HTML}{BDE8FF}
+\definecolor{ieiceblue}{HTML}{E5F6FF}
+\definecolor{ielightgrey}{HTML}{F8F8F8}
+\definecolor{iewhite}{HTML}{FFFFFF}
+\definecolor{ieblack}{HTML}{000000}
+
+% Schools
+\definecolor{ieschoolTech}{HTML}{6DC201}  % Science & Technology accent green
+
+% ------------------------ Base Themes --------------------------------
+\usetheme{default}
+\useinnertheme{rounded}
+\useoutertheme{miniframes}   % slim progress bar
+\usecolortheme{dove}         % neutral base, we override below
+
+% ------------------------ Beamer Colors ------------------------------
+\setbeamercolor{normal text}{fg=ieblack,bg=iewhite}
+\setbeamercolor{structure}{fg=ieprimary}
+
+% Titles / frame titles
+\setbeamercolor{title}{fg=iewhite,bg=ieprimary}
+\setbeamercolor{frametitle}{fg=ieprimary,bg=iewhite}
+
+% Blocks
+\setbeamercolor{block title}{fg=ieprimary,bg=ieiceblue}    % subtle corporate band
+\setbeamercolor{block body}{fg=ieblack,bg=ielightgrey}
+
+% Lists & emphasis
+\setbeamercolor{itemize item}{fg=ieaccent}
+\setbeamercolor{itemize subitem}{fg=ieschoolTech}
+\setbeamercolor{alerted text}{fg=ieschoolTech}
+
+% ------------------------ Beamer Fonts -------------------------------
+% Keep titles modest for diagram-heavy slides
+\setbeamerfont{title}{size=\Large,series=\bfseries}      % was Huge
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{author}{size=\normalsize}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries} % was Large
+\setbeamerfont{block title}{series=\bfseries}
+\setbeamerfont{footline}{size=\scriptsize}
+\setbeamerfont{section in head/foot}{series=\bfseries}
+
+% ------------------------ Frametitle Template ------------------------
+% Flat frametitle with thin accent rule
+\setbeamertemplate{frametitle}{%
+	\vspace{-8pt}%
+	\nointerlineskip%
+	\begin{beamercolorbox}[wd=\paperwidth,sep=2pt,leftskip=10pt]{frametitle}%
+		\usebeamerfont{frametitle}\insertframetitle
+	\end{beamercolorbox}%
+	\vspace{-4pt}%
+	\tikz{\draw[ieaccent, line width=0.4pt] (0,0) -- (0.9\paperwidth,0);}%
+}
+
+% ------------------------ Title Page ---------------------------------
+% Compact title band to save vertical space
+\setbeamertemplate{title page}{%
+	\begin{beamercolorbox}[wd=\paperwidth, ht=0.22\paperheight, sep=1.2em, leftskip=1.5em, dp=1.2ex]{title}
+		{\usebeamerfont{title}\inserttitle\par}
+		\vspace{0.3em}
+		{\usebeamerfont{subtitle}\insertsubtitle\par}
+	\end{beamercolorbox}
+	\vspace{0.8em}
+	{\usebeamerfont{author}\insertauthor \par}
+	\vspace{0.15em}
+	{\usebeamerfont{date}\insertdate \par}
+}
+
+% ------------------------ Items & Enumerations -----------------------
+\setbeamertemplate{itemize item}{\tikz \fill[ieaccent] (0,0) circle (1.2pt);}
+\setbeamertemplate{itemize subitem}{\tikz \fill[ieschoolTech] (0,0) circle (1.0pt);}
+\setbeamertemplate{itemize subsubitem}{\tikz \fill[iedeepblue] (0,0) circle (0.9pt);}
+
+% ------------------------ Captions -----------------------------------
+\setbeamertemplate{caption}{\insertcaption}
+
+% ------------------------ Optional Footer with Logo ------------------
+\makeatletter
+\newcommand{\ie@logopath}{../images/ie_logo.png}
+
+\setbeamertemplate{footline}{%
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=0.85\paperwidth, ht=2.6ex, dp=1.2ex, leftskip=1em]{author in head/foot}%
+			\usebeamerfont{footline}\insertshorttitle
+			\hspace{0.75em}\textcolor{iedeepblue}{|}\hspace{0.75em}
+			\insertshortauthor
+			\hspace{0.75em}\textcolor{iedeepblue}{|}\hspace{0.75em}
+			\insertframenumber/\inserttotalframenumber
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=0.15\paperwidth, ht=2.6ex, dp=1.2ex, rightskip=0.6em]{author in head/foot}%
+			\raisebox{-0.2ex}{\includegraphics[height=5ex]{\ie@logopath}}%
+		\end{beamercolorbox}%
+	}%
+}
+\makeatother
+
+% ------------------------ Section Pages (Optional) -------------------
+\setbeamertemplate{section page}{%
+	\begin{centering}
+		\vfill
+		{\usebeamerfont{title}\color{ieprimary}\insertsection}
+		\vfill
+	\end{centering}
+}
+\AtBeginSection{\frame{\sectionpage}}
+
+% ------------------------ Link Colors --------------------------------
+\hypersetup{
+	colorlinks=true,
+	linkcolor=ieprimary,
+	urlcolor=ieaccent,
+	citecolor=ieprimary
+}
+
+% ------------------------ Utilities ----------------------------------
+% Uncomment to overlay a thin grid in figures:
+% \tikzset{iegrid/.style={help lines, color=ielightgrey}}
