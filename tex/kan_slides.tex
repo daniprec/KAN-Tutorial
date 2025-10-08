@@ -133,17 +133,17 @@ The basis functions follow the standard \textbf{Cox–de Boor recursive definiti
 \begin{flalign*}
 	N_{i,0}(x) &= 
 	\begin{cases}
-		1, & t_j \le x < t_{j+1}, \quad j = i - k \\
+		1, & t_{i-k} \le x < t_{i-k+1},\\
 		0, & \text{otherwise}
 	\end{cases} &
 \end{flalign*}
 
 \begin{flalign*}
 	N_{i,k}(x) &=
-	\frac{x - t_j}{t_{j+k} - t_j} N_{j,k-1}(x)
+	\frac{x - t_{i-k}}{t_{i} - t_{i-k}} N_{i,k-1}(x)
 	+
-	\frac{t_{j+k+1} - x}{t_{j+k+1} - t_{j+1}} N_{j+1,k-1}(x),
-	\quad k > 0, \quad j = i - k &
+	\frac{t_{i+1} - x}{t_{i+1} - t_{i-k+1}} N_{i,k-1}(x),
+	\quad k > 0,&
 \end{flalign*}
 
 where $\mathbf{t}$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers of length $(G + 2k + 1)$, being $\mathbf{t} = (t_{-k}, \dots, t_0, \dots, t_G, \dots t_{G+k})$.
