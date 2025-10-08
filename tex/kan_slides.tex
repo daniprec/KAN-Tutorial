@@ -116,13 +116,13 @@ $$
 \begin{frame}{B-Splines}
 	$\phi_{d,p,q}$ can be chosen from any family of continuous univariate functions. A common choice is the \textbf{B-spline} family.
 	
-	A B-spline of degree $k$ is defined as:
+	A B-spline of $k$-order is defined as:
 	
-	$$B_k(x) = \sum_{i=1}^{n} P_i N_{i,k}(x)$$
+	$$B_k(x) = \sum_{i=0}^{G+k-1} P_i N_{i,k}(x)$$
 	
-	where $n$ is the number of control points,\\
-	$N_{i,k}$ are the basis functions of degree $k$,\\
-	and $P_i$ are the control points (spline weights).
+	where $G$ is the number of segments,\\
+	$N_{i,k}(x)$ are the basis functions of $k$-order (for a total of $G+k$),\\
+	and $P_i$ are the control points coefficients (spline weights).
 \end{frame}
 
 %------------------------------------------
@@ -133,20 +133,20 @@ The basis functions follow the standard \textbf{Cox–de Boor recursive definiti
 \begin{flalign*}
 	N_{i,0}(x) &= 
 	\begin{cases}
-		1, & t_i \le x < t_{i+1} \\
+		1, & t_j \le x < t_{j+1}, \quad j = i - k \\
 		0, & \text{otherwise}
 	\end{cases} &
 \end{flalign*}
 
 \begin{flalign*}
 	N_{i,k}(x) &=
-	\frac{x - t_i}{t_{i+k} - t_i} N_{i,k-1}(x)
+	\frac{x - t_j}{t_{j+k} - t_j} N_{j,k-1}(x)
 	+
-	\frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} N_{i+1,k-1}(x),
-	\quad k > 0 &
+	\frac{t_{j+k+1} - x}{t_{j+k+1} - t_{j+1}} N_{j+1,k-1}(x),
+	\quad k > 0, \quad j = i - k &
 \end{flalign*}
 
-where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers of length $m = n + k + 1$.
+where $\mathbf{t}$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers of length $(G + 2k + 1)$, being $\mathbf{t} = (t_{-k}, \dots, t_0, \dots, t_G, \dots t_{G+k})$.
 \end{frame}
 
 %------------------------------------------
@@ -158,13 +158,13 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		% --- Left column ---
 		\column{0.45\textwidth}
 		
-		Knot vector $\mathbf{t}=(t_1,\dots,t_{m})$ with
-		$$m=n+k+1,\qquad a=t_k+1,\quad b=t_{m-k}$$
+		Knot vector $\mathbf{t}$ with
+		$$a=t_{-k},\quad b=t_{G+k}$$
 		Clamped uniform knots on $[a,b]$:
 		\begin{align*}
-			t_1 &=\cdots=t_{k+1}=a,\\
-			t_{n+1} &=\cdots=t_{n+k+1}=b,\\
-			t_{k+j} &= a+\frac{j}{n-k}(b-a),\quad j=1,\dots,n-k\\
+			t_{-k} &=\cdots=t_{0}=a,\\
+			t_{G} &=\cdots=t_{G+k}=b,\\
+			t_{j} &= a+\frac{j}{G}(b-a),\quad j=0,\dots,G\\
 		\end{align*}
 		
 		% --- Right column ---
@@ -188,12 +188,10 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	Each $\phi_{d,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
 	
 	\begin{flalign*}
-		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n} P_i\, N_{i,k}(x)
+		\phi(x) = w_b\, b(x) + w_s \sum_{i=0}^{G+k-1} P_i\, N_{i,k}(x)
 	\end{flalign*}
 	
-	Here, $w_b$ is the learnable weight of the basis function, and the control point coefficients $P_i$ scale the individual B-spline functions directly.
-	
-	We choose the basis as:
+	Here, $w_b$ is the learnable weight of the basis function, $w_s$ is the weight for the spline, and the control point coefficients $P_i$ scale the individual B-spline functions directly. We choose the basis as:
 	
 	\begin{flalign*}
 		b(x) = \mathrm{SiLU}(x) = \frac{x}{1 + e^{-x}}
@@ -217,15 +215,16 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		
 		\textbf{Hyperparameters}
 		\begin{itemize}
-			\item $n$: number of control points.
-			\item $k$: B-spline degree.
+			\item $G$: grid size (no. intervals).
+			\item $k$: B-spline order.
 		\end{itemize}
 		
 		\vspace{0.8em}
 		\textbf{Learnable parameters}\\(for each edge)
 		\begin{itemize}
-			\item $P_i$: control points, $i \in [1, n]$.
+			\item $P_i$: control points, $i \in [0, G+k-1]$.
 			\item $w_b$: basis weight.
+			\item $w_s$: spline weight.
 		\end{itemize}
 		
 	\end{columns}
@@ -279,8 +278,8 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		
 		\begin{itemize}
 			\item Train on a coarse grid first.
-			\item Add knots to increase resolution and capacity.
-			\item Initialize new coefficients by least-squares fitting.
+			\item Add intervals to increase resolution and capacity (increase $G$)
+			\item Initialize new coefficients ($P_i$) by least-squares fitting.
 			\item Continue training to improve accuracy.
 		\end{itemize}
 		
@@ -343,9 +342,9 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	KANs provide an interpretable path from neural models to closed-form expressions:
 	
 	\begin{itemize}
-		\item Each learned $\phi_{d,p,q}$ is a univariate function, which can often be approximated by simple analytic forms (e.g., $\sin$, $\exp$, $\log$).
+		\item Each learned $\phi(x)$ is a univariate function, which can often be approximated by simple analytic forms (e.g., $\sin$, $\exp$, $\log$).
 		\item After training, these functions are ``snapped'' to symbolic templates via affine fitting, producing human-readable equations.
-		\item The resulting network can be viewed as a composition graph of symbolic functions approximating $f(x)$.
+		\item The resulting network can be viewed as a composition graph of symbolic functions approximating $f(\mathbf{x})$.
 	\end{itemize}
 	
 	This makes KANs suitable not only for prediction but also for \textbf{discovering interpretable laws} from data.
@@ -367,7 +366,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 
 \begin{frame}{Limitations of KANs}
 	\begin{itemize}
-		\item \textbf{Parameter \& memory blow-up.} For comparable width, KAN layers require substantially more parameters and activations than FC layers; memory scales poorly with $I,O,B$ and grid/spline settings $(n,k)$.
+		\item \textbf{Parameter \& memory blow-up.} For comparable width, KAN layers require substantially more parameters and activations than FC layers; memory scales poorly with $I,O,B$ and grid/spline settings $(G,k)$.
 		\item \textbf{Convergence to sharp minima.} Hessian spectrum analyses show KANs tend to sharper minima $\Rightarrow$ weaker generalization (vision benchmarks).
 		\item \textbf{Underperformance at scale.} On SciML (Neural ODEs), vision (Mixer/DeiT), and operator learning (FNO), KANs typically underperform MLPs despite higher cost.
 		\item \textbf{Runtime/feasibility.} Longer training times and frequent OOM at moderate batch sizes on 16nB nPUs when scaling depth/width.
@@ -380,8 +379,8 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	\textbf{Fully Connected (FC) layer} with $O$ outputs and $I$ inputs:
 	$$O \times (I+1)$$
 	
-	\textbf{KAN layer (B-spline)} with two shortcut weights, $n$ control points, $k$ order:
-	$$I \times O \times (\,2 + n + k\,)$$
+	\textbf{KAN layer (B-spline)} with two shortcut weights, grid size $G$, $k$-order:
+	$$I \times O \times (\,2 + G + k\,)$$
 	
 	Even ``width-matched'' KANs are often an order of magnitude larger than FC/MLP layers.
 \end{frame}
@@ -389,14 +388,16 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 %------------------------------------------
 
 \begin{frame}{Limitations - Memory Footprint (Training)}
-	\textbf{Fully Connected (FC) layer} accounting for both forward and reverse pass (one matrix each), and the parameter count:
+	\textbf{Fully Connected (FC) layer} accounting for both \textcolor{blue}{forward} and \textcolor{red}{reverse} pass (one matrix each), and the coefficients (parameters):
 	$$
-	O \times B + O \times B + O \times (I+1)
+	\textcolor{blue}{O \times B} + \textcolor{red}{O \times B} + O \times (I+1)
 	$$
 	
 	\textbf{KAN layer (B-spline)}
 	$$
-	I  \times (1{+}n{+}k) \times B \;+\; I \times (n{+}k{-}1) \times B \;+\; I \times O \times (2{+}n{+}k).
+	\textcolor{blue}{I \times (1{+}G{+}k) \times B} 
+	\;+\; \textcolor{red}{I \times (G{+}k{-}1) \times B} 
+	\;+\; I \times O \times (2{+}G{+}k)
 	$$
 	
 	KANs allocate extra tensors for B-spline evaluation and De Boor recursion.
