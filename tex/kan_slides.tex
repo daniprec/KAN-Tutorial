@@ -192,15 +192,14 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		\begin{itemize}
 			\item $n$: number of control points.
 			\item $k$: B-spline degree.
-			\item $m$: number of knots, $m = n + k + 1$
 		\end{itemize}
 		
 		\vspace{0.8em}
 		\textbf{Learnable parameters}\\(for each edge)
 		\begin{itemize}
-			\item $t_i$: knot vectors, $i \in [1, m]$.
-			\item $P_i$: control points (spline weights), $i \in [1, n]$.
+			\item $P_i$: control points, $i \in [1, n]$.
 			\item $w_b$: basis weight.
+			\item \textit{Potentially} $t_i$: knot vectors, $i \in [1, m]$.
 		\end{itemize}
 		
 	\end{columns}
