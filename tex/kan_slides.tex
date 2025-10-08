@@ -196,7 +196,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	We choose the basis as:
 	
 	\begin{flalign*}
-		b(x) = \mathrm{kiLU}(x) = \frac{x}{1 + e^{-x}}
+		b(x) = \mathrm{SiLU}(x) = \frac{x}{1 + e^{-x}}
 	\end{flalign*}
 	
 \end{frame}
@@ -415,7 +415,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 %------------------------------------------
 
 \begin{frame}{Empirical Evidence Across Domains}
-	\textbf{Neural ODEs (kciML).}
+	\textbf{Neural ODEs (SciML).}
 	\begin{itemize}
 		\item On Lotka–Volterra, Pleiades, Spiral ODE, KAN-ODEs reach \textbf{higher final loss}; MLP-ODEs fit dynamics better.
 	\end{itemize}
