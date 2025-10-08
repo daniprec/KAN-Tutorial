@@ -10,6 +10,9 @@
 % \usepackage{minted}
 % \setminted{fontsize=\footnotesize, breaklines, autogobble, frame=lines}
 
+\usepackage[backend=biber,style=authoryear,maxbibnames=3]{biblatex}
+\addbibresource{references.bib}
+
 % Optional: set short versions for footer
 \title[Kolmogorov–Arnold Networks]{KAN Tutorial Slides}
 \author[Daniel Precioso]{Daniel Precioso Garcelán}
@@ -105,7 +108,7 @@ $$
 		\vspace{0.8em}
 		\textit{Why go deeper?}
 		\begin{itemize}
-			\item \textbf{Theory:} Any continuous $f(\mathbf{x})$ admits a shallow KAN \([n,\,2n{+}1,\,1]\).
+			\item \textbf{Theory:} Any continuous $f(\mathbf{x})$ admits a shallow KAN $[n_{\text{in}},\,2\ n_{\text{in}} + 1,\,1]$.
 			\item \textbf{Practice:} Deeper KANs can model non-continuous functions. Depth improves expressivity.
 		\end{itemize}
 		
@@ -119,11 +122,11 @@ $$
 	
 	A B-spline of degree $k$ is defined as:
 	
-	$$B_k(x) = \sum_{i=1}^{n-k-1} P_i N_{i,k}(x)$$
+	$$B_k(x) = \sum_{i=1}^{n} P_i N_{i,k}(x)$$
 	
-	where $n$ is the number of control points (length of the knot vector),\\
+	where $n$ is the number of control points,\\
 	$N_{i,k}$ are the basis functions of degree $k$,\\
-	and $P_i$ are the basis function weights.
+	and $P_i$ are the control points (spline weights).
 \end{frame}
 
 %------------------------------------------
@@ -147,21 +150,21 @@ The basis functions follow the standard \textbf{Cox–de Boor recursive definiti
 	\quad k > 0 &
 \end{flalign*}
 
-where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers.
+where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing sequence of real numbers of length $m = n + k + 1$.
 \end{frame}
 
 %------------------------------------------
 
 \begin{frame}{B-Splines as KAN Edges}
 	
-	All univariate functions share the same spline degree $k$ and knot vector length $n$.  
+	All univariate functions share the same spline degree $k$ and number of control points $n$.  
 	Each $\phi_{d,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
 	
 	\begin{flalign*}
-		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n-k-1} P_i\, N_{i,k}(x)
+		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n} P_i\, N_{i,k}(x)
 	\end{flalign*}
 	
-	Here, $w_b$ is the learnable weight of the basis function, and the spline coefficients \(P_i\) scale the individual B-spline functions directly.
+	Here, $w_b$ is the learnable weight of the basis function, and the control point coefficients $P_i$ scale the individual B-spline functions directly.
 	
 	We choose the basis as:
 	
@@ -178,24 +181,25 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 	\begin{columns}[T,onlytextwidth]
 		
 		% --- Left column: diagram ---
-		\column{0.55\textwidth}
+		\column{0.5\textwidth}
 		\centering
 		\resizebox{!}{0.8\textheight}{\input{kan_251.tex}}
 		
 		% --- Right column: explanation ---
-		\column{0.4\textwidth}
+		\column{0.45\textwidth}
 		
 		\textbf{Hyperparameters}
 		\begin{itemize}
 			\item $n$: number of control points.
 			\item $k$: B-spline degree.
+			\item $m$: number of knots, $m = n + k + 1$
 		\end{itemize}
 		
 		\vspace{0.8em}
 		\textbf{Learnable parameters}\\(for each edge)
 		\begin{itemize}
-			\item $t_i$: knot vectors, $i \in [1, n]$.
-			\item $P_i$: B-spline weights, $i \in [1, n-k-1]$.
+			\item $t_i$: knot vectors, $i \in [1, m]$.
+			\item $P_i$: control points (spline weights), $i \in [1, n]$.
 			\item $w_b$: basis weight.
 		\end{itemize}
 		
@@ -241,7 +245,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{Grid Extension}
+\begin{frame}{Capabilities - Grid Extension}
 	\begin{columns}[T,onlytextwidth]
 		
 		% --- Left column: explanation ---
@@ -267,7 +271,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{Continual Learning}
+\begin{frame}{Capabilities - Continual Learning}
 	
 	Because B-splines have \textbf{local support}, updates to $\phi(x)$ in one region of the input space affect only nearby points.  
 	This locality mitigates \textbf{catastrophic forgetting}, a common issue in MLPs where learning new data can overwrite previously acquired knowledge.
@@ -282,7 +286,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{Sparsity}
+\begin{frame}{Capabilities - Sparsity}
 	\begin{columns}[T,onlytextwidth]
 		
 		% --- Left column: explanation ---
@@ -309,7 +313,7 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{Symbolic Regression}
+\begin{frame}{Capabilities - Symbolic Regression}
 	
 	KANs provide an interpretable path from neural models to closed-form expressions:
 	
@@ -332,6 +336,25 @@ where ${t_i} \in [t_1, t_n]$ is the \textbf{knot vector}, a non-decreasing seque
 		\includegraphics[height=0.8\textheight]{../images/kan_training.png}
 	\end{figure}
 	
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Limitations of KANs with B-Splines}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[height=0.8\textheight]{../images/kan_training.png}
+	\end{figure}
+	
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{References}
+	\nocite{liu_kan_2025}
+	\nocite{pal_understanding_nodate}
+	\printbibliography[heading=none]
 \end{frame}
 
 \end{document}
