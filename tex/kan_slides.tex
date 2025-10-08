@@ -15,7 +15,7 @@
 
 % Optional: set short versions for footer
 \title[Kolmogorov–Arnold Networks]{KAN Tutorial Slides}
-\author[Daniel Precioso]{Daniel Precioso Garcelán}
+\author[Daniel Precioso \and Francisco Suárez]{Daniel Precioso \and Francisco Suárez}
 \date{\today}
 
 \begin{document}
@@ -176,6 +176,37 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
+\begin{frame}{B-Splines as KAN Edges}
+	
+	\begin{columns}[T,onlytextwidth]
+		
+		% --- Left column ---
+		\column{0.45\textwidth}
+		
+		Knot vector $\mathbf{t}=(t_1,\dots,t_{m})$ with
+		$$m=n+k+1,\qquad a=t_k+1,\quad b=t_{m-k}$$
+		Clamped uniform knots on $[a,b]$:
+		\begin{align*}
+			t_1 &=\cdots=t_{k+1}=a,\\
+			t_{n+1} &=\cdots=t_{n+k+1}=b,\\
+			t_{k+j} &= a+\frac{j}{n-k}(b-a),\quad j=1,\dots,n-k\\
+		\end{align*}
+		
+		% --- Right column ---
+		\column{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[height=0.6\textheight]{../images/Cardinal_cubic_B-spline2.png}
+		\end{figure}
+		$\mathbf{t}=(-2, -2, -2, -2, -1, 0, 1, 2, 2, 2, 2)$\\
+		$\mathbf{P}=(0, 0, 0, 6, 0, 0, 0)$
+		
+	\end{columns}
+	
+\end{frame}
+
+%------------------------------------------
+
 \begin{frame}{KAN Parameters}
 	
 	\begin{columns}[T,onlytextwidth]
@@ -199,7 +230,6 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		\begin{itemize}
 			\item $P_i$: control points, $i \in [1, n]$.
 			\item $w_b$: basis weight.
-			\item \textit{Potentially} $t_i$: knot vectors, $i \in [1, m]$.
 		\end{itemize}
 		
 	\end{columns}
