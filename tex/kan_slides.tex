@@ -22,9 +22,7 @@
 \maketitle
 
 \begin{frame}{Kolmogorov-Arnold Representation Theorem}
-Let $ \Omega \subset \mathbb{R}^d $ be a bounded domain and let $ f: \Omega \rightarrow \mathbb{R} $ be a continuous function; i.e. $ f \in C(\Omega) $.
-
-Then there exist continuous univariate functions
+Let $ \Omega \subset \mathbb{R}^d $ be a bounded domain and let $ f: \Omega \rightarrow \mathbb{R} $ be a continuous function; i.e. $ f \in C(\Omega) $. Then there exist continuous univariate functions
 $$
 \Phi_q: \mathbb{R} \to \mathbb{R}, \quad q = 1, \dots, 2d+1;
 $$
@@ -47,16 +45,14 @@ $$
 		% --- Left column: diagram ---
 		\column{0.55\textwidth}
 		\centering
-		\resizebox{!}{0.8\textheight}{\input{an_251.tex}}
+		\resizebox{!}{0.75\textheight}{\input{an_251.tex}}
 		
 		% --- Right column: explanation ---
 		\column{0.4\textwidth}
 		The theorem states that any $f(x_1, x_2)$ can be written as a sum of univariate compositions.
 		
-		\vspace{0.8em}
 		The diagram shows this expression visually: each block represents a component of the decomposition.
 		
-		\vspace{0.8em}
 		Together, they form a \textbf{Kolmogorov–Arnold Network (KAN)}.
 		
 	\end{columns}
@@ -108,7 +104,7 @@ $$
 		\vspace{0.8em}
 		\textit{Why go deeper?}
 		\begin{itemize}
-			\item \textbf{Theory:} Any continuous $f(\mathbf{x})$ admits a shallow KAN $[n_{\text{in}},\,2\ n_{\text{in}} + 1,\,1]$.
+			\item \textbf{Theory:} Any continuous $f(\mathbf{x})$ admits a shallow KAN $[I,\,2\ I + 1,\,1]$.
 			\item \textbf{Practice:} Deeper KANs can model non-continuous functions. Depth improves expressivity.
 		\end{itemize}
 		
@@ -131,7 +127,7 @@ $$
 
 %------------------------------------------
 
-\begin{frame}{B-Splines}
+\begin{frame}{B-Splines - Basis Function}
 The basis functions follow the standard \textbf{Cox–de Boor recursive definition}:
 
 \begin{flalign*}
@@ -155,28 +151,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{B-Splines as KAN Edges}
-	
-	All univariate functions share the same spline degree $k$ and number of control points $n$.  
-	Each $\phi_{d,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
-	
-	\begin{flalign*}
-		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n} P_i\, N_{i,k}(x)
-	\end{flalign*}
-	
-	Here, $w_b$ is the learnable weight of the basis function, and the control point coefficients $P_i$ scale the individual B-spline functions directly.
-	
-	We choose the basis as:
-	
-	\begin{flalign*}
-		b(x) = \mathrm{SiLU}(x) = \frac{x}{1 + e^{-x}}
-	\end{flalign*}
-	
-\end{frame}
-
-%------------------------------------------
-
-\begin{frame}{B-Splines as KAN Edges}
+\begin{frame}{B-Splines - Knot Vector}
 	
 	\begin{columns}[T,onlytextwidth]
 		
@@ -202,6 +177,27 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		$\mathbf{P}=(0, 0, 0, 6, 0, 0, 0)$
 		
 	\end{columns}
+	
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{B-Splines as KAN Edges}
+	
+	All univariate functions share the same spline degree $k$ and number of control points $n$.  
+	Each $\phi_{d,p,q}$ combines a basis function (similar to residual connections) with a B-spline expansion:
+	
+	\begin{flalign*}
+		\phi(x) = w_b\, b(x) + \sum_{i=1}^{n} P_i\, N_{i,k}(x)
+	\end{flalign*}
+	
+	Here, $w_b$ is the learnable weight of the basis function, and the control point coefficients $P_i$ scale the individual B-spline functions directly.
+	
+	We choose the basis as:
+	
+	\begin{flalign*}
+		b(x) = \mathrm{kiLU}(x) = \frac{x}{1 + e^{-x}}
+	\end{flalign*}
 	
 \end{frame}
 
@@ -278,7 +274,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	\begin{columns}[T,onlytextwidth]
 		
 		% --- Left column: explanation ---
-		\column{0.5\textwidth}
+		\column{0.6\textwidth}
 		\textbf{Grid extension} refines a trained KAN by adding more spline knots without restarting training.
 		
 		\begin{itemize}
@@ -291,7 +287,7 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 		Test loss often improves until the parameter count roughly matches the number of data points.
 		
 		% --- Right column: image ---
-		\column{0.45\textwidth}
+		\column{0.4\textwidth}
 		\centering
 		\includegraphics[height=0.8\textheight]{../images/grid_extension.png}
 		
@@ -319,23 +315,23 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 	\begin{columns}[T,onlytextwidth]
 		
 		% --- Left column: explanation ---
-		\column{0.5\textwidth}
+		\column{0.55\textwidth}
 		
 		\textbf{Sparsity} removes unnecessary components, revealing the essential structure of our target function.
 		
 		\vspace{0.6em}
 		\begin{itemize}
 			\item \textbf{Regularization} drives many spline weights toward zero.
-			\item Irrelevant $\phi_{d,p,q}$ can be pruned after training.
+			\item Irrelevant edges can be pruned after training.
 			\item The result is a compact, interpretable network.
 		\end{itemize}
 		
 		Sparsity helps towards \textbf{interpretability}.
 		
 		% --- Right column: diagram ---
-		\column{0.45\textwidth}
+		\column{0.4\textwidth}
 		\centering
-		\resizebox{!}{0.75\textheight}{\input{kan_2xy.tex}}
+		\resizebox{!}{0.65\textheight}{\input{kan_2xy.tex}}
 		
 	\end{columns}
 \end{frame}
@@ -369,13 +365,70 @@ where ${t_i} \in [t_1, t_m]$ is the \textbf{knot vector}, a non-decreasing seque
 
 %------------------------------------------
 
-\begin{frame}{Limitations of KANs with B-Splines}
+\begin{frame}{Limitations of KANs}
+	\begin{itemize}
+		\item \textbf{Parameter \& memory blow-up.} For comparable width, KAN layers require substantially more parameters and activations than FC layers; memory scales poorly with $I,O,B$ and grid/spline settings $(n,k)$.
+		\item \textbf{Convergence to sharp minima.} Hessian spectrum analyses show KANs tend to sharper minima $\Rightarrow$ weaker generalization (vision benchmarks).
+		\item \textbf{Underperformance at scale.} On SciML (Neural ODEs), vision (Mixer/DeiT), and operator learning (FNO), KANs typically underperform MLPs despite higher cost.
+		\item \textbf{Runtime/feasibility.} Longer training times and frequent OOM at moderate batch sizes on 16nB nPUs when scaling depth/width.
+	\end{itemize}
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Limitations - Parameter Complexity}
+	\textbf{Fully Connected (FC) layer} with $O$ outputs and $I$ inputs:
+	$$O \times (I+1)$$
 	
-	\begin{figure}
-		\centering
-		\includegraphics[height=0.8\textheight]{../images/kan_training.png}
-	\end{figure}
+	\textbf{KAN layer (B-spline)} with two shortcut weights, $n$ control points, $k$ order:
+	$$I \times O \times (\,2 + n + k\,)$$
 	
+	Even ``width-matched'' KANs are often an order of magnitude larger than FC/MLP layers.
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Limitations - Memory Footprint (Training)}
+	\textbf{Fully Connected (FC) layer} accounting for both forward and reverse pass (one matrix each), and the parameter count:
+	$$
+	O \times B + O \times B + O \times (I+1)
+	$$
+	
+	\textbf{KAN layer (B-spline)}
+	$$
+	I  \times (1{+}n{+}k) \times B \;+\; I \times (n{+}k{-}1) \times B \;+\; I \times O \times (2{+}n{+}k).
+	$$
+	
+	KANs allocate extra tensors for B-spline evaluation and De Boor recursion.
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Limitations - Convergence \& Generalization}
+	\begin{itemize}
+		\item Large-batch training tends to \emph{sharp} minima (many large positive eigenvalues); \emph{flat} minima correlate with better generalization.
+		\item Empirically, KAN variants show Hessian spectra with \textbf{more positive eigenvalues} than MLP counterparts, \emph{even at small batches}.
+		\item \textbf{Effect:} test-time accuracy lags behind MLPs on vision tasks; e.g., DeiT on CIFAR-100 shows $\sim$8--12\% lower Top-1 for B-spline KANs with \textbf{more} parameters.
+	\end{itemize}
+\end{frame}
+
+%------------------------------------------
+
+\begin{frame}{Empirical Evidence Across Domains}
+	\textbf{Neural ODEs (kciML).}
+	\begin{itemize}
+		\item On Lotka–Volterra, Pleiades, Spiral ODE, KAN-ODEs reach \textbf{higher final loss}; MLP-ODEs fit dynamics better.
+	\end{itemize}
+	
+	\textbf{Computer Vision.}
+	\begin{itemize}
+		\item MLP-Mixer/Conv-Mixer/DeiT: KAN variants converge to \textbf{sharper minima} and \textbf{lower accuracy}; parameter counts are 2--3$\times$ higher for KANs at similar or worse accuracy.
+	\end{itemize}
+	
+	\textbf{Operator Learning (FNO).}
+	\begin{itemize}
+		\item Replacing lift/projection MLPs with KANs yields \textbf{slightly worse} test loss without residuals; with residuals, small gains appear but at \textbf{prohibitive memory cost}.
+	\end{itemize}
 \end{frame}
 
 %------------------------------------------
