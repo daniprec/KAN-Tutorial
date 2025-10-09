@@ -158,14 +158,13 @@ where $\mathbf{t}$ is the \textbf{knot vector}, a non-decreasing sequence of rea
 		% --- Left column ---
 		\column{0.45\textwidth}
 		
-		Knot vector $\mathbf{t}$ with
-		$$a=t_{-k},\quad b=t_{G+k}$$
-		Clamped uniform knots on $[a,b]$:
+		Clamped knot vector $\mathbf{t}$ on $[a,b]$, with uniform knots:
 		\begin{align*}
 			t_{-k} &=\cdots=t_{0}=a,\\
 			t_{G} &=\cdots=t_{G+k}=b,\\
 			t_{j} &= a+\frac{j}{G}(b-a),\quad j=0,\dots,G\\
 		\end{align*}
+		Ensures interpolation at the endpoints and smoothness ($C^{k-1}$) inside the interval.
 		
 		% --- Right column ---
 		\column{0.5\textwidth}
